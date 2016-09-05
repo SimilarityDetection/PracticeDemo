@@ -1,13 +1,9 @@
-﻿using Common.Logging;
+﻿using CronExpressionDescriptor;
 using Quartz;
 using Quartz.Impl;
 using Quartz.Impl.Triggers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace CronDemoConsole
 {
@@ -15,6 +11,7 @@ namespace CronDemoConsole
     {
         static void Main(string[] args)
         {
+            string cronExpression = "* * * * * ? ";
 
             // 调度器
             ISchedulerFactory sf = new StdSchedulerFactory();
@@ -24,7 +21,11 @@ namespace CronDemoConsole
             JobDetailImpl jobDetail = new JobDetailImpl("job1", typeof(HelloJob));
 
             // CronTrigger
-            CronTriggerImpl cronTrigger = new CronTriggerImpl("triggerName", "triggerGroup", "0/1 * * * * ? ");
+            CronTriggerImpl cronTrigger = new CronTriggerImpl("triggerName", "triggerGroup", cronExpression);
+
+            // Cron表达式，可读形式
+            string cronExpressionDescriptor = ExpressionDescriptor.GetDescription(cronExpression);
+            Console.WriteLine(cronExpressionDescriptor);
 
             // 调度增加job
             sched.ScheduleJob(jobDetail, cronTrigger);
